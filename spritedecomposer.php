@@ -49,7 +49,7 @@ function explodeImage($srcFilePath, $srcFileType, $frameWidth, $frameHeight, $de
 			copyPixelsToImage($srcimage, $desimage, $col * $frameWidth, $row * $frameHeight, $frameWidth, $frameHeight);
 
 			$strFormat = ($isPNG) ? ".png" : ".jpeg";
-			$file = "./result/".$frameNumber.$strFormat;
+			$file = "./result/".getFilenamePrefix().$frameNumber.$strFormat;
 			if ($isPNG)
 				imagepng($desimage, $file);
 			else
@@ -123,4 +123,24 @@ function validImages()
 		return true;
 	}
 }
+
+function getFilenamePrefix()
+{
+	$s = '';
+	if(!empty($_POST['prefix'])){
+		$s = $_POST['prefix'];
+		// Sanitize		
+		// Remove anything which isn't a word, whitespace, number
+		// or any of the following caracters -_~,;[]().
+		// If you don't need to handle multi-byte characters
+		// you can use preg_replace rather than mb_ereg_replace
+		// Thanks @Łukasz Rysiak!
+		$s = mb_ereg_replace("([^\w\s\d\-_~,;\[\]\(\).])", '', $s);
+		// Remove any runs of periods (thanks falstro!)
+		$s = mb_ereg_replace("([\.]{2,})", '', $s);
+
+	}
+	return $s;
+}
+
 ?>
