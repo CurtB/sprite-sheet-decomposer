@@ -42,7 +42,11 @@ function explodeImage($srcFilePath, $srcFileType, $frameWidth, $frameHeight, $de
 	$srcimage = ($isPNG) ? imagecreatefrompng($srcFilePath) : imagecreatefromjpeg($srcFilePath);
 	$frameNumber = 0;
 	for($row = 0; $row < $height / $frameHeight; $row++) {
+		if(ignoreImage('rows', $row+1)) continue;
+		
 		for($col = 0; $col < $width / $frameWidth; $col++) {
+			if(ignoreImage('columns', $col+1)) continue;
+
 			$desimage = imagecreatetruecolor($frameWidth, $frameHeight);
 			imagealphablending($desimage, false);
 			imagesavealpha($desimage, true);
@@ -143,4 +147,10 @@ function getFilenamePrefix()
 	return $s;
 }
 
+function ignoreImage($check_type, $val){
+	if(!empty($_POST['max_'.$check_type]) && is_numeric($_POST['max_'.$check_type])){
+		if($val >= $_POST['max_'.$check_type]) return true;
+	}
+	return false;
+}
 ?>
